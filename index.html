@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/tailwind.css" />
+    <link rel="stylesheet" href="/css/icons.min.css" />
+    <script src="/js/alpine.min.js" defer></script>
+    <title>LodgeLink</title>
+  </head>
+  <body class="p-5 block">
+    <div class="max-w-[40rem] mx-auto" x-data="signin">
+      <div>
+        <h1 class="text-xl font-semibold pb-5 mb-5 border-b border-gray-300">
+          Authentication
+        </h1>
+        <div class="grid grid-cols-2 gap-5">
+          <div
+            class="text-center bg-gray-100 rounded p-3 flex flex-col justify-center gap-3"
+          >
+            <div>
+              <span class="text-2xl">🤗</span> <br />Welcome to Admin System.
+              Please Sign In to continue.
+            </div>
+          </div>
+          <div class="flex flex-col gap-3">
+            <input
+              type="text"
+              placeholder="Email"
+              class="input input-bordered w-full"
+              x-model="email"
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              class="input input-bordered w-full"
+              x-model="password"
+            />
+            <button class="btn btn-primary" @click="login">Sign In</button>
+          </div>
+          <div class="col-span-2" x-show="showError">
+            <div role="alert" class="alert alert-error">
+              <i class="gg-info"></i>
+              <span>Sign in failed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    document.addEventListener("alpine:init", () => {
+      const baseURL = "https://sayed-rafi.pockethost.io/api"
+
+      if(localStorage.getItem("token")){
+        window.location.href = 'pages/rooms.html';
+      }
+
+      Alpine.data("signin", () => ({
+        email: "",
+        password: "",
+        showError: false,
+
+        async login() {
+          try {
+            const response = await fetch(
+              `${baseURL}/collections/users/auth-with-password`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  identity: this.email,
+                  password: this.password,
+                }),
+              }
+            );
+            if (response.ok) {
+              const user = await response.json();
+              localStorage.setItem("user", JSON.stringify(user.record))
+              localStorage.setItem("token", user.token)
+              window.location.href = 'pages/rooms.html';
+            } else {
+              this.showError = true;
+            }
+          } catch (err) {
+            this.showError = true;
+          }
+        },
+      }));
+    });
+  </script>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/tailwind.css" />
+  <link rel="stylesheet" href="/css/icons.min.css" />
+  <script src="/js/alpine.min.js" defer></script>
+  <title>LodgeLink | Staffs</title>
+</head>
+
+<body class="p-5 block">
+  <div class="max-w-[60rem] mx-auto" x-data="user">
+    <div class="pb-2 mb-5 border-b border-gray-300 flex items-center justify-between" x-init="fetchData()">
+      <div class="flex gap-3">
+        <a href="/pages/rooms.html" class="btn">Rooms</a>
+        <a href="/pages/customers.html" class="btn">Customers</a>
+        <a href="/pages/bookings.html" class="btn">Bookings</a>
+        <a href="/pages/staffs.html" class="btn">Staffs</a>
+      </div>
+      <div class="flex gap-3">
+        <button class="btn btn-accent gap-2">
+          <div class="h-5 w-5">
+            <img x-bind:src="avatar" alt="" class="h-5 w-5 object-cover rounded-full">
+          </div>
+          <div x-text="name"></div>
+        </button>
+        <button class="btn btn-error" x-on:click="logout()">
+          <i class="gg-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <h1 class="font-semibold pb-5 mb-5 border-b border-gray-300">
+        Staff Management
+      </h1>
+      <!-- Staff List HTML -->
+      <div class="relative overflow-x-auto border">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+              <th scope="col" class="p-2">
+                Avatar
+              </th>
+              <th scope="col" class="p-2">
+                Name
+              </th>
+              <th scope="col" class="p-2">
+                Phone Number
+              </th>
+              <th scope="col" class="p-2">
+                Username
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="staff in data">
+              <tr class="bg-white border-b">
+                <td class="p-2">
+                  <img x-bind:src="staff.thumbnail" class="h-8 w-8 rounded object-cover" alt="">
+                </td>
+                <th scope="row" class="p-2" x-text="staff.name"></th>
+                <td class="p-2" x-text="staff.phone_no"></td>
+                <td class="p-2" x-text="staff.expand.user_id.username"></td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</body>
+<script>
+  document.addEventListener("alpine:init", () => {
+    const baseURL = "https://sayed-rafi.pockethost.io/api"
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token")
+    Alpine.data("user", () => ({
+      avatar: `${baseURL}/files/${user.collectionId}/${user.id}/${user.avatar}`,
+      name: user.name,
+      email: user.email,
+      token: token,
+      data: [],
+      logout(){
+        localStorage.clear()
+        window.location.href="/"
+      },
+      async fetchData() {
+        try {
+          const response = await fetch(
+            `${baseURL}/collections/staffs/records?perPage=100&expand=user_id`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+              }
+            }
+          );
+          if (response.ok) {
+            const data = await response.json();
+            this.data = data.items
+          }
+        } catch (err) { }
+      },
+    }));
+  });
+</script>
+
+</html>
