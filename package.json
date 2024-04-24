@@ -2,9 +2,7 @@
   "name": "hotel-management",
   "version": "1.0.0",
   "scripts": {
-    "start": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
+    "start": "vite"
   },
   "devDependencies": {
     "autoprefixer": "^10",
