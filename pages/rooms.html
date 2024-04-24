@@ -11,7 +11,7 @@
   <title>LodgeLink | Rooms</title>
 </head>
 
-<body class="p-5 block">
+<body class="p-5 block bg-slate-200">
   <div class="max-w-[60rem] mx-auto" x-data="user">
     <div class="pb-2 mb-5 border-b border-gray-300 flex items-center justify-between" x-init="fetchData()">
       <div class="flex gap-3">
@@ -21,13 +21,13 @@
         <a href="/pages/staffs.html" class="btn">Staffs</a>
       </div>
       <div class="flex gap-3">
-        <button class="btn btn-accent gap-2">
+        <button class="btn btn-primary gap-2">
           <div class="h-5 w-5">
             <img x-bind:src="avatar" alt="" class="h-5 w-5 object-cover rounded-full">
           </div>
           <div x-text="name"></div>
         </button>
-        <button class="btn btn-error" x-on:click="logout()">
+        <button class="btn btn-info" x-on:click="logout()">
           <i class="gg-chevron-right"></i>
         </button>
       </div>
